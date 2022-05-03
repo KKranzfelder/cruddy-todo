@@ -25,34 +25,32 @@ exports.readAll = (callback) => {
 
   fs.readdir(exports.dataDir, (err, files) => {
     if (err) {
-      throw ('error reading');
-    }
-    var data = _.map(files, (file) => {
-      var id = path.basename(file, '.txt');
-      return { id: id, text: id };
-    });
-    // console.log(files);
-    // var results = [];
-    // files.forEach((file) => {
-    //   // var id = path.basename(file).slice(0, 5);
-    //   console.log('individual file: ', file.slice(0, 5));
-    //   results.push({ id: file.slice(0, 5), text: file.slice(0, 5)});
-    // });
-    // console.log(results)
-    // return results;
-    // });
+      callback(err);
+    } else {
+      var data = _.map(files, (file) => {
+        var id = path.basename(file, '.txt');
+        return { id: id, text: id };
+      });
 
-    callback(null, data);
+      callback(null, data);
+    }
   });
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(filePath, (err, fileData) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, { id, text: fileData.toString() });
+    }
+  });
+//   if (!text) {
+//     callback(new Error(`No item with id: ${id}`));
+//   } else {
+//     callback(null, { id, text });
+//   }
 };
 
 exports.update = (id, text, callback) => {
