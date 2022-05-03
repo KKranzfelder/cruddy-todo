@@ -22,10 +22,28 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+
+  fs.readdir(exports.dataDir, (err, files) => {
+    if (err) {
+      throw ('error reading');
+    }
+    var data = _.map(files, (file) => {
+      var id = path.basename(file, '.txt');
+      return { id: id, text: id };
+    });
+    // console.log(files);
+    // var results = [];
+    // files.forEach((file) => {
+    //   // var id = path.basename(file).slice(0, 5);
+    //   console.log('individual file: ', file.slice(0, 5));
+    //   results.push({ id: file.slice(0, 5), text: file.slice(0, 5)});
+    // });
+    // console.log(results)
+    // return results;
+    // });
+
+    callback(null, data);
   });
-  callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
